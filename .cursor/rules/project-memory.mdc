@@ -1,0 +1,66 @@
+---
+description: Projekt-Kontext, Instruktionen und wichtigste Befehle (xover-story)
+alwaysApply: true
+---
+
+# xover-story – Projekt-Memory
+
+## Was ist das?
+
+- **Die Dimensionsrisse**: Interaktives Crossover-Comic (Apothecary Diaries × Demon Slayer × Hunter x Hunter).
+- Hauptseite: **index.html** (Navigation: Start, Charaktere, Geschichte).
+- Live: **https://ma3u.github.io/xover-story/** (GitHub Pages, Branch `main`, Root).
+
+## Wichtige Befehle
+
+### GitHub Pages aktualisieren
+```bash
+git add .
+git commit -m "Deine Nachricht"
+git push origin main
+```
+→ Pages baut automatisch nach Push auf `main` (1–2 Min.).
+
+### Leonardo.AI – Panel-Bilder erzeugen
+```bash
+# Alle 8 Panels (siehe scripts/panel-prompts.json)
+node scripts/leonardo-generate.mjs
+
+# Ein Panel
+node scripts/leonardo-generate.mjs --panel 3
+```
+→ URLs in `scripts/panel-images.json`. Danach:
+```bash
+node scripts/apply-panel-images.mjs   # schreibt URLs in index.html
+```
+
+### Leonardo.AI – Charakter-Porträt (z. B. Maomao, B&W/Bleistift)
+```bash
+node scripts/leonardo-character.mjs --maomao
+# oder eigener Prompt:
+node scripts/leonardo-character.mjs "Dein Prompt hier"
+```
+→ Bild-URL in der Ausgabe; in index.html im Bereich „Charaktere“ (`.character-portrait`) eintragen.
+
+### API-Key
+- Liegt in **.env** als `LEONARDO_API_KEY=...` (nicht committen, .gitignore).
+
+## Dateien / Struktur
+
+| Was | Wo |
+|-----|-----|
+| Startseite + Charaktere + Geschichte | index.html |
+| Panel-Prompts für Leonardo | scripts/panel-prompts.json |
+| Generierte Panel-URLs (lokal) | scripts/panel-images.json (gitignored) |
+| Webhook (optional) | api/leonardo-webhook.js (z. B. Vercel) |
+
+## Sprache / Kommunikation
+
+- Nutzer spricht oft **Deutsch**; Antworten auf Deutsch, wenn so angesprochen.
+- Technische Begriffe (z. B. Befehle, Dateinamen) können auf Englisch bleiben.
+
+## Kurz-Checkliste für häufige Aufgaben
+
+1. **Neues Bild für Charaktere-Seite** → `leonardo-character.mjs` (--maomao oder Prompt), dann `index.html` img-src anpassen.
+2. **Comic-Panels neu erzeugen** → `leonardo-generate.mjs`, danach `apply-panel-images.mjs`.
+3. **Seite live aktualisieren** → Commit + Push auf `main`.
