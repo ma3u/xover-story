@@ -1,0 +1,52 @@
+{
+  "panels": [
+    {
+      "panel": 1,
+      "title": "Prolog: Der erste Riss",
+      "alt": "Maomao im Labor",
+      "prompt": "Anime style, young female apothecary in imperial palace laboratory at night, concentrating over potions and vials, glowing violet dimensional rift opening in the air beside her, mysterious energy, detailed traditional East Asian interior, dramatic lighting"
+    },
+    {
+      "panel": 2,
+      "title": "Panel 2: Tanjiros Begegnung",
+      "alt": "Tanjiro und Nezuko",
+      "prompt": "Anime style, Tanjiro and Nezuko in Japanese mountain forest Taisho era, demon slayer outfit and bamboo muzzle, glowing dimensional rift appearing before them, tense atmosphere, anime character design, night scene"
+    },
+    {
+      "panel": 3,
+      "title": "Panel 3: Gons Entdeckung",
+      "alt": "Gon und Killua",
+      "prompt": "Anime style, Gon and Killua training Nen abilities on tropical island, young hunters, mysterious glowing rift in the air, adventure anime aesthetic, energetic composition"
+    },
+    {
+      "panel": 4,
+      "title": "Panel 4: Das Zusammentreffen",
+      "alt": "Drei Helden treffen sich",
+      "prompt": "Anime style, three heroes from different worlds meeting in surreal interdimensional space, floating islands and crystalline structures, young female in traditional dress, boy with earrings and checkered haori, boy in green, crossover anime scene"
+    },
+    {
+      "panel": 5,
+      "title": "Panel 5: Der Dimensionsfresser erscheint",
+      "alt": "Der Dimensionsfresser",
+      "prompt": "Anime style, gigantic ancient creature made of dimensional energy materializing, reality-devouring entity, dark and epic, unstable dimensions, menacing presence, dramatic lighting"
+    },
+    {
+      "panel": 6,
+      "title": "Panel 6: Der Kampfplan",
+      "alt": "Die drei beraten sich",
+      "prompt": "Anime style, three heroes huddled in strategy meeting, crystalline interdimensional background, determined expressions, anime crossover group shot, planning moment"
+    },
+    {
+      "panel": 7,
+      "title": "Panel 7: Der finale Kampf",
+      "alt": "Der finale Kampf",
+      "prompt": "Anime style, epic battle scene, three heroes attacking together with combined powers, fire and energy, giant creature being struck, dynamic action, dramatic anime climax"
+    },
+    {
+      "panel": 8,
+      "title": "Epilog: Rückkehr und Freundschaft",
+      "alt": "Drei Freunde",
+      "prompt": "Anime style, three friends smiling together, warm farewell, interdimensional portals in background, hopeful and friendly, anime crossover ending scene"
+    }
+  ]
+}

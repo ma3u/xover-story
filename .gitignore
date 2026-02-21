@@ -6,3 +6,9 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Secrets (Leonardo.AI API key)
+.env
+
+# Generated (run scripts/apply-panel-images.mjs to write URLs into HTML)
+scripts/panel-images.json
