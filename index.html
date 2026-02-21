@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Die Dimensionsrisse - Interaktives Comic</title>
+    <style>
+        :root {
+            --color-bg-primary: #1a1a2e;
+            --color-bg-secondary: #16213e;
+            --color-accent: #e94560;
+            --color-text: #f1f1f1;
+            --color-panel: #0f3460;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
+            color: var(--color-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 3px solid var(--color-accent);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--color-accent);
+            text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #ccc;
+        }
+
+        .character-intro {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .character-card {
+            background: var(--color-panel);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid var(--color-accent);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .character-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
+        }
+
+        .character-card h3 {
+            color: var(--color-accent);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .character-card .series {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .character-card .abilities {
+            background: rgba(0,0,0,0.3);
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .comic-viewer {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .panel-container {
+            background: var(--color-panel);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 3px solid var(--color-accent);
+            position: relative;
+            min-height: 400px;
+        }
+
+        .panel-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--color-accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .panel-content {
+            display: none;
+        }
+
+        .panel-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scene-title {
+            font-size: 1.8rem;
+            color: var(--color-accent);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .scene-description {
+            background: rgba(0,0,0,0.4);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .dialogue-box {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            position: relative;
+            border: 2px solid #333;
+        }
+
+        .dialogue-box::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 30px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #333;
+        }
+
+        .dialogue-box .speaker {
+            font-weight: bold;
+            color: var(--color-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background: #c93552;
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .progress {
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            color: var(--color-accent);
+        }
+
+        .sketch-placeholder {
+            background: rgba(0,0,0,0.5);
+            border: 3px dashed var(--color-accent);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .sketch-placeholder svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 1rem;
+        }
+
+        .interactive-choice {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .choice-btn {
+            background: var(--color-panel);
+            border: 2px solid var(--color-accent);
+            color: var(--color-text);
+            padding: 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .choice-btn:hover {
+            background: var(--color-accent);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .panel-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🌌 Die Dimensionsrisse 🌌</h1>
+        <p>Ein Crossover-Abenteuer von Apothecary Diaries × Demon Slayer × Hunter x Hunter</p>
+    </div>
+
+    <div class="character-intro">
+        <div class="character-card">
+            <h3>Maomao</h3>
+            <div class="series">Apothecary Diaries</div>
+            <p><strong>Fähigkeiten:</strong></p>
+            <div class="abilities">
+                • Gift- und Heilkundeexpertin<br>
+                • Brillante Detektivin<br>
+                • Wissenschaftliche Analyse<br>
+                • Strategisches Denken
+            </div>
+        </div>
+
+        <div class="character-card">
+            <h3>Tanjiro Kamado</h3>
+            <div class="series">Demon Slayer</div>
+            <p><strong>Fähigkeiten:</strong></p>
+            <div class="abilities">
+                • Wasser-Atemtechnik<br>
+                • Hinokami Kagura<br>
+                • Übernatürlicher Geruchssinn<br>
+                • Mitgefühl & Entschlossenheit
+            </div>
+        </div>
+
+        <div class="character-card">
+            <h3>Gon Freecss</h3>
+            <div class="series">Hunter x Hunter</div>
+            <p><strong>Fähigkeiten:</strong></p>
+            <div class="abilities">
+                • Nen-Verstärkung (Enhancer)<br>
+                • Jajanken-Technik<br>
+                • Tierische Instinkte<br>
+                • Unerschütterlicher Optimismus
+            </div>
+        </div>
+    </div>
+
+    <div class="comic-viewer">
+        <div class="progress">
+            Panel <span id="currentPanel">1</span> von <span id="totalPanels">8</span>
+        </div>
+
+        <div class="panel-container">
+            <div class="panel-number">Panel 1</div>
+            
+            <div class="panel-content active" data-panel="1">
+                <h2 class="scene-title">Prolog: Der erste Riss</h2>
+                
+                <div class="sketch-placeholder" style="min-height: auto; padding: 0; border: none; background: transparent;">
+                    <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/5d5979cf-66a6-4e93-8ff8-801720d62fd1.png" alt="Maomao im Labor" style="width: 100%; max-width: 800px; border-radius: 10px; box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);">
+                </div>
+
+                <div class="scene-description">
+                    <strong>Ort:</strong> Kaiserpalast, späte Nacht<br><br>
+                    Maomao arbeitet konzentriert an einer neuen Giftmischung, als plötzlich die Luft vor ihr zu flimmern beginnt. Ein leuchtender Riss öffnet sich im Raum, aus dem seltsame violette Energie strömt.
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Maomao:</div>
+                    "Was...? Diese Substanz defiert alle chemischen Gesetze, die ich kenne. Faszinierend und beunruhigend zugleich."
+                </div>
+            </div>
+
+            <div class="panel-content" data-panel="2">
+                <h2 class="scene-title">Panel 2: Tanjiros Begegnung</h2>
+                
+                <div class="sketch-placeholder" style="min-height: auto; padding: 0; border: none; background: transparent;">
+                    <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/404bec08-2641-419f-83df-1dba07576515.png" alt="Tanjiro und Nezuko" style="width: 100%; max-width: 800px; border-radius: 10px; box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);">
+                </div>
+
+                <div class="scene-description">
+                    <strong>Ort:</strong> Japanische Berge, Taisho-Ära<br><br>
+                    Tanjiro und Nezuko sind auf Dämonenjagd, als ein ähnlicher Riss vor ihnen erscheint. Sein übernatürlicher Geruchssinn alarmiert ihn sofort.
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Tanjiro:</div>
+                    "Dieser Geruch... es ist kein Dämon. Es riecht nach... anderen Welten? Nezuko, bleib vorsichtig!"
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Nezuko:</div>
+                    "Hmm-mmm!" <em>(besorgt)</em>
+                </div>
+            </div>
+
+            <div class="panel-content" data-panel="3">
+                <h2 class="scene-title">Panel 3: Gons Entdeckung</h2>
+                
+                <div class="sketch-placeholder" style="min-height: auto; padding: 0; border: none; background: transparent;">
+                    <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/254a7c55-0cef-4cf8-9546-c32c54c0f627.png" alt="Gon und Killua" style="width: 100%; max-width: 800px; border-radius: 10px; box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);">
+                </div>
+
+                <div class="scene-description">
+                    <strong>Ort:</strong> Greed Island<br><br>
+                    Gon und Killua trainieren ihre Nen-Fähigkeiten, als Gons Instinkte ihn zu einem mysteriösen Riss führen, der definitiv nicht Teil des Spiels ist.
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Gon:</div>
+                    "Killua! Spürst du das? Diese Energie ist anders als alles Nen, was wir kennen!"
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Killua:</div>
+                    "Sei vorsichtig, Gon. Das könnte gefährlich sein."
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Gon:</div>
+                    "Ich muss es untersuchen!" <em>(stürmt los)</em>
+                </div>
+            </div>
+
+            <div class="panel-content" data-panel="4">
+                <h2 class="scene-title">Panel 4: Das Zusammentreffen</h2>
+                
+                <div class="sketch-placeholder" style="min-height: auto; padding: 0; border: none; background: transparent;">
+                    <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/886b0285-dfe0-415d-8535-ad5ccbc71915.png" alt="Drei Helden treffen sich" style="width: 100%; max-width: 800px; border-radius: 10px; box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);">
+                </div>
+
+                <div class="scene-description">
+                    <strong>Ort:</strong> Zwischen-Dimension<br><br>
+                    Die drei Dimensionsrisse verschmelzen und saugen alle drei gleichzeitig in eine neutrale Zwischen-Dimension. Sie landen in einer surrealen Landschaft aus schwebenden Inseln und kristallinen Strukturen.
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Maomao:</div>
+                    <em>(analytisch)</em> "Wo bin ich? Und wer seid ihr beide?"
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Tanjiro:</div>
+                    <em>(freundlich)</em> "Mein Name ist Tanjiro Kamado! Ich bin ein Dämonenjäger. Du riechst... normal? Also kein Dämon."
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Gon:</div>
+                    <em>(begeistert)</em> "Wow! Sind wir in einem anderen Spiel? Ich bin Gon Freecss, Hunter!"
+                </div>
+            </div>
+
+            <div class="panel-content" data-panel="5">
+                <h2 class="scene-title">Panel 5: Der Dimensionsfresser erscheint</h2>
+                
+                <div class="sketch-placeholder" style="min-height: auto; padding: 0; border: none; background: transparent;">
+                    <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/4a9c5226-9961-4e34-923f-e3550d8d27c5.png" alt="Der Dimensionsfresser" style="width: 100%; max-width: 800px; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 0, 0, 0.4);">
+                </div>
+
+                <div class="scene-description">
+                    <strong>Die Bedrohung offenbart sich</strong><br><br>
+                    Eine gigantische Kreatur materialisiert sich - der Dimensionsfresser. Es ist ein uraltes Wesen, das Realitäten verschlingt. Seine bloße Präsenz lässt die Dimensionen instabil werden.
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Dimensionsfresser:</div>
+                    <strong style="color: red;">"DREI WELTEN... DREI ENERGIEN... PERFEKT FÜR MEIN BANKETT!"</strong>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Maomao:</div>
+                    <em>(analysiert schnell)</em> "Unmöglich... ein Wesen aus reiner dimensionaler Energie. Wir brauchen einen Plan!"
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Tanjiro:</div>
+                    <em>(entschlossen)</em> "Egal was es ist, wir müssen es aufhalten, bevor es unsere Welten zerstört!"
+                </div>
+            </div>
+
+            <div class="panel-content" data-panel="6">
+                <h2 class="scene-title">Panel 6: Der Kampfplan</h2>
+                
+                <div class="sketch-placeholder" style="min-height: auto; padding: 0; border: none; background: transparent;">
+                    <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/c45142dc-7437-40d2-a5c8-7e37749e04f0.png" alt="Die drei beraten sich" style="width: 100%; max-width: 800px; border-radius: 10px; box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);">
+                </div>
+
+                <div class="scene-description">
+                    Maomao nutzt ihr wissenschaftliches Denken, Tanjiro seinen Kampfinstinkt und Gon seine Nen-Kenntnisse. Gemeinsam entwickeln sie eine Strategie.
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Maomao:</div>
+                    "Das Wesen besteht aus dimensionaler Energie. Wenn wir seine Energiequelle neutralisieren... Ich habe eine Idee. Tanjiro, du sagtest, du kannst Gerüche wahrnehmen?"
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Tanjiro:</div>
+                    "Ja! Ich kann seine schwache Stelle erschnüffeln!"
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Gon:</div>
+                    "Und ich kann meine Nen-Energie verstärken, um es zu treffen! Zeig mir, wo!"
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Maomao:</div>
+                    "Ich werde ein Gift aus diesen kristallinen Strukturen hier synthetisieren. Sie scheinen dimensionale Eigenschaften zu haben..."
+                </div>
+            </div>
+
+            <div class="panel-content" data-panel="7">
+                <h2 class="scene-title">Panel 7: Der finale Kampf</h2>
+                
+                <div class="sketch-placeholder" style="min-height: auto; padding: 0; border: none; background: transparent;">
+                    <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/b34da5ca-4286-46d9-b4eb-5523e66312dc.png" alt="Der finale Kampf" style="width: 100%; max-width: 800px; border-radius: 10px; box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);">
+                </div>
+
+                <div class="scene-description">
+                    <strong>Die koordinierte Offensive</strong><br><br>
+                    1. Maomao wirft ihre dimensionale Gift-Kristall-Mischung<br>
+                    2. Tanjiro nutzt Hinokami Kagura, um die Kreatur zu schwächen<br>
+                    3. Gon entfesselt sein verstärktes Jajanken mit maximaler Kraft
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Maomao:</div>
+                    "Jetzt! Das Gift destabilisiert seine Struktur!"
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Tanjiro:</div>
+                    "Hinokami Kagura - Klare blaue Himmel!"
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Gon:</div>
+                    "Jajanken... ROCK!!!" <em style="color: var(--color-accent);">(mit voller Nen-Verstärkung)</em>
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Dimensionsfresser:</div>
+                    "UNMÖÖÖÖÖGLICH!!!" <em style="color: #666;">(zerfällt)</em>
+                </div>
+            </div>
+
+            <div class="panel-content" data-panel="8">
+                <h2 class="scene-title">Epilog: Rückkehr und Freundschaft</h2>
+                
+                <div class="sketch-placeholder" style="min-height: auto; padding: 0; border: none; background: transparent;">
+                    <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/b885382f-c184-4743-8782-099496c2b4e6.png" alt="Drei Freunde" style="width: 100%; max-width: 800px; border-radius: 10px; box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);">
+                </div>
+
+                <div class="scene-description">
+                    Die Dimension stabilisiert sich. Drei neue Portale öffnen sich, jeweils zurück zu ihrer Heimatwelt.
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Tanjiro:</div>
+                    <em>(lächelt)</em> "Das war unglaublich! Danke euch beiden. Ihr habt wahre Heldenherzen."
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Gon:</div>
+                    "Das war das coolste Abenteuer ever! Können wir das nochmal machen?"
+                </div>
+
+                <div class="dialogue-box">
+                    <div class="speaker">Maomao:</div>
+                    <em>(mit einem seltenen Lächeln)</em> "Ihr beide seid... interessante Testsubjekte. Ich meine... gute Gefährten. Vielleicht treffen wir uns wieder."
+                </div>
+
+                <div class="scene-description" style="text-align: center; margin-top: 2rem;">
+                    <strong style="color: var(--color-accent); font-size: 1.5rem;">Ende - Folge 1</strong><br>
+                    <em>Die Dimensionsrisse sind geschlossen... vorerst.</em>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="prevBtn" onclick="previousPanel()">◀ Zurück</button>
+            <button class="btn" id="nextBtn" onclick="nextPanel()">Weiter ▶</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPanel = 1;
+        const totalPanels = 8;
+
+        function updatePanel() {
+            document.querySelectorAll('.panel-content').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            const activePanel = document.querySelector(`[data-panel="${currentPanel}"]`);
+            if (activePanel) {
+                activePanel.classList.add('active');
+            }
+
+            document.querySelector('.panel-number').textContent = `Panel ${currentPanel}`;
+            document.getElementById('currentPanel').textContent = currentPanel;
+            document.getElementById('totalPanels').textContent = totalPanels;
+
+            document.getElementById('prevBtn').disabled = currentPanel === 1;
+            document.getElementById('nextBtn').disabled = currentPanel === totalPanels;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function nextPanel() {
+            if (currentPanel < totalPanels) {
+                currentPanel++;
+                updatePanel();
+            }
+        }
+
+        function previousPanel() {
+            if (currentPanel > 1) {
+                currentPanel--;
+                updatePanel();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextPanel();
+            if (e.key === 'ArrowLeft') previousPanel();
+        });
+
+        updatePanel();
+    </script>
+</body>
+</html>
+
