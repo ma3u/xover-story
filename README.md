@@ -49,6 +49,26 @@ node scripts/apply-panel-images.mjs
 
 Then refresh the site or commit and push.
 
+### Character portraits (black & white, original characters only)
+
+All character images use a **shared base prompt** (English) in `scripts/character-prompts.json`:
+
+- **Base prompt:** Black and white line art, monochrome, ink style, no background, original anime character design. We never draw a literal pencil; negative prompt excludes pencil/utensils.
+- **Characters:** Maomao, Tanjiro, Gon, Nezuko (each described as in the source series). See `docs/leonardo-character-notes.md` for why AI often struggles with existing comic characters and how to improve (reference images, LoRA).
+
+```bash
+# Generate all character portraits
+node scripts/leonardo-characters.mjs
+
+# Generate one character by id (maomao, tanjiro, gon, nezuko)
+node scripts/leonardo-characters.mjs maomao
+
+# Write generated URLs into index.html (Charaktere page)
+node scripts/leonardo-characters.mjs --apply
+```
+
+Results are saved to `scripts/character-images.json`. Edit `scripts/character-prompts.json` to change the base prompt or add characters.
+
 ### Customizing prompts
 
 Edit `scripts/panel-prompts.json` to change the text prompt for each panel. Re-run the generate script for the panels you change.

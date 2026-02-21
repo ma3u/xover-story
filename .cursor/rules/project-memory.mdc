@@ -34,13 +34,10 @@ node scripts/leonardo-generate.mjs --panel 3
 node scripts/apply-panel-images.mjs   # schreibt URLs in index.html
 ```
 
-### Leonardo.AI – Charakter-Porträt (z. B. Maomao, B&W/Bleistift)
-```bash
-node scripts/leonardo-character.mjs --maomao
-# oder eigener Prompt:
-node scripts/leonardo-character.mjs "Dein Prompt hier"
-```
-→ Bild-URL in der Ausgabe; in index.html im Bereich „Charaktere“ (`.character-portrait`) eintragen.
+### Leonardo.AI – Charaktere (B&W, Original-Charaktere, nie Bleistift)
+- **Basis-Prompt (EN)** und Charaktere: `scripts/character-prompts.json`. Nie „pencil“/„graphite“; negative prompt schließt „pencil as object“, „drawing utensil“ aus. Nur originale Charaktere (Maomao, Tanjiro, Gon, Nezuko) wie in der Quelle.
+- **Warum Leonardo oft schlecht trifft:** `docs/leonardo-character-notes.md` (Likeness, generischer „Comic“-Stil; Abhilfe: Reference Image, LoRA, konkrete Stilbeschreibung).
+- **Alle erzeugen:** `node scripts/leonardo-characters.mjs` | **Einer:** `node scripts/leonardo-characters.mjs maomao` | **URLs eintragen:** `node scripts/leonardo-characters.mjs --apply`
 
 ### API-Key
 - Liegt in **.env** als `LEONARDO_API_KEY=...` (nicht committen, .gitignore).
@@ -52,6 +49,8 @@ node scripts/leonardo-character.mjs "Dein Prompt hier"
 | Startseite + Charaktere + Geschichte | index.html |
 | Panel-Prompts für Leonardo | scripts/panel-prompts.json |
 | Generierte Panel-URLs (lokal) | scripts/panel-images.json (gitignored) |
+| Basis-Prompt + Charakter-Prompts (B&W Comic) | scripts/character-prompts.json |
+| Generierte Charakter-URLs (lokal) | scripts/character-images.json (gitignored) |
 | Webhook (optional) | api/leonardo-webhook.js (z. B. Vercel) |
 
 ## Sprache / Kommunikation

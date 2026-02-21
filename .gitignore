@@ -12,3 +12,5 @@ Thumbs.db
 
 # Generated (run scripts/apply-panel-images.mjs to write URLs into HTML)
 scripts/panel-images.json
+# Generated character portraits (run scripts/leonardo-characters.mjs --apply to write into index.html)
+scripts/character-images.json

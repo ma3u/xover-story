@@ -31,7 +31,7 @@ if (!apiKey) {
 }
 
 const PRESETS = {
-  maomao: "Maomao from Apothecary Diaries, character portrait, young woman with red hair in twin buns, intelligent eyes, traditional East Asian setting, black and white pencil sketch, graphite drawing, soft shading, anime character design, head and shoulders portrait",
+  maomao: "Maomao from Apothecary Diaries (Kusuriya no Hitorigoto), character portrait only, young woman, red hair in twin buns, intelligent eyes, head and shoulders, black and white line art, monochrome, no background, original anime character design",
 };
 
 let prompt = process.argv.slice(2).filter((a) => !a.startsWith("--")).join(" ");
@@ -54,8 +54,9 @@ async function createGeneration(prompt, options = {}) {
       num_images: 1,
       width: options.width ?? 768,
       height: options.height ?? 768,
+      negative_prompt: options.negative_prompt ?? "color, colourful, full color, detailed background, scenery, environment, landscape, background scene, colored, pencil as object, drawing utensil, pencil in hand",
       ...(options.presetStyle && { presetStyle: options.presetStyle }),
-      alchemy: false,
+      alchemy: options.alchemy ?? false,
       photoReal: false,
     }),
   });
@@ -98,7 +99,11 @@ async function waitForComplete(generationId, maxWaitMs = 120000) {
 (async () => {
   console.log("Prompt:", prompt);
   console.log("Creating generation...");
-  const generationId = await createGeneration(prompt, {});
+  const generationId = await createGeneration(prompt, {
+    presetStyle: "SKETCH_BW",
+    alchemy: true,
+    negative_prompt: "color, colourful, full color, detailed background, scenery, environment, landscape, background, colored, photo, pencil as object, drawing utensil, pencil in hand",
+  });
   console.log("Generation ID:", generationId, "- waiting for completion...");
   const imageUrl = await waitForComplete(generationId);
   console.log("Done. Image URL:\n" + imageUrl);

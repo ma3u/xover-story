@@ -1,0 +1,31 @@
+{
+  "basePrompt": "Black and white line art, monochrome character portrait, ink style, no background, isolated character, head and shoulders, original anime design",
+  "negativePrompt": "color, colourful, full color, detailed background, scenery, environment, landscape, background scene, colored, photo, realistic, 3D render, pencil as object, drawing utensil, pencil in hand, holding pencil, sketchbook",
+  "styleSuffix": "faithful to original character design, clean linework",
+  "characters": [
+    {
+      "id": "maomao",
+      "name": "Maomao",
+      "alt": "Maomao",
+      "prompt": "Maomao from Apothecary Diaries (Kusuriya no Hitorigoto), young woman, red hair in twin buns, intelligent eyes, original anime character design"
+    },
+    {
+      "id": "tanjiro",
+      "name": "Tanjiro Kamado",
+      "alt": "Tanjiro",
+      "prompt": "Tanjiro Kamado from Demon Slayer (Kimetsu no Yaiba), young man, hanafuda earrings, checkered black and green haori, green eyes, scar on forehead, original anime character design"
+    },
+    {
+      "id": "gon",
+      "name": "Gon Freecss",
+      "alt": "Gon",
+      "prompt": "Gon Freecss from Hunter x Hunter, young boy, spiky black hair, green jacket, bright expression, original anime character design"
+    },
+    {
+      "id": "nezuko",
+      "name": "Nezuko Kamado",
+      "alt": "Nezuko",
+      "prompt": "Nezuko Kamado from Demon Slayer (Kimetsu no Yaiba), young woman, long dark hair, pink eyes, kimono, original anime character design"
+    }
+  ]
+}
