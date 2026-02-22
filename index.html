@@ -39,12 +39,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            overflow: visible;
         }
 
         .nav-title {
             font-size: 1.5rem;
             font-weight: bold;
             letter-spacing: 2px;
+            white-space: nowrap;
+            min-width: 0;
         }
 
         .nav-burger {
@@ -445,7 +448,15 @@
             }
 
             .nav-title {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
+                letter-spacing: 1px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .nav-title {
+                font-size: 0.95rem;
+                letter-spacing: 0.5px;
             }
         }
     </style>
